@@ -1,4 +1,4 @@
-const CACHE = "vaxtrack-v5";
+const CACHE = "vaxtrack-v6";
 const ASSETS = [
   "./",
   "./index.html",
