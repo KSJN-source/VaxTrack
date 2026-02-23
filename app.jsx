@@ -1157,7 +1157,7 @@ function VaxTrack() {
     const dobStr = fmtDate(child.dob);
     const childName = child.name;
 
-    function generate() {
+    async function generate() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ orientation:"landscape", unit:"mm", format:"a4" });
       const W=doc.internal.pageSize.getWidth(), H=doc.internal.pageSize.getHeight();
@@ -1239,14 +1239,32 @@ function VaxTrack() {
       // Download — multi-method for iOS/Android/desktop
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
       if (isIOS) {
+        const blob = doc.output("blob");
+        const file = new File([blob], fileName, { type: "application/pdf" });
+        // iOS 15+ — native share sheet (Save to Files, AirDrop, etc.)
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({ files: [file], title: fileName });
+            return;
+          } catch(e) {
+            if (e.name === "AbortError") return; // user cancelled — do nothing
+            // fall through to iframe fallback
+          }
+        }
+        // Fallback: open PDF in new tab with a prominent "← Back" button
         const dataUri = doc.output("datauristring");
+        const appUrl = window.location.href;
         const newTab = window.open();
         if (newTab) {
           newTab.document.write(
-            `<html><head><title>${fileName}</title><meta name="viewport" content="width=device-width"/></head>` +
-            `<body style="margin:0;background:#111;"><p style="color:#fff;font-family:sans-serif;padding:14px;font-size:13px;">` +
-            `📄 <b>${fileName}</b> — tap the Share button (⬆) to save.</p>` +
-            `<iframe src="${dataUri}" style="width:100%;height:calc(100vh - 60px);border:none;"></iframe></body></html>`
+            `<html><head><title>${fileName}</title><meta name="viewport" content="width=device-width,initial-scale=1"/></head>` +
+            `<body style="margin:0;background:#111;font-family:sans-serif;">` +
+            `<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:#1565c0;">` +
+            `<a href="${appUrl}" style="color:white;font-size:13px;font-weight:800;text-decoration:none;background:rgba(255,255,255,0.2);border-radius:8px;padding:7px 14px;">← Back to App</a>` +
+            `<span style="color:white;font-size:12px;font-weight:600;flex:1;">📄 ${fileName}</span>` +
+            `<span style="color:rgba(255,255,255,0.75);font-size:11px;">Tap ⬆ to save</span>` +
+            `</div>` +
+            `<iframe src="${dataUri}" style="width:100%;height:calc(100vh - 48px);border:none;display:block;"></iframe></body></html>`
           );
         } else {
           window.location.href = dataUri;
@@ -1268,8 +1286,7 @@ function VaxTrack() {
 
     setPdfExporting(child.name);
     if (window.jspdf) {
-      generate();
-      setPdfExporting(null);
+      generate().finally(() => setPdfExporting(null));
     } else {
       const s1 = document.createElement("script");
       s1.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
@@ -1277,8 +1294,8 @@ function VaxTrack() {
       s1.onload = () => {
         const s2 = document.createElement("script");
         s2.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js";
-        s2.onload = () => { generate(); setPdfExporting(null); };
-        s2.onerror = () => { generate(); setPdfExporting(null); };
+        s2.onload = () => { generate().finally(() => setPdfExporting(null)); };
+        s2.onerror = () => { generate().finally(() => setPdfExporting(null)); };
         document.head.appendChild(s2);
       };
       document.head.appendChild(s1);
