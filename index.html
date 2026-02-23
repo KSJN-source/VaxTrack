@@ -48,7 +48,7 @@
   <div id="splash">
     <img src="icon-180.png" alt="" onerror="this.style.display='none'" />
     <h1>VaxTrack</h1>
-    <p>IAP Immunization Log</p>
+    <p>IAP Immunization Log · India</p>
     <div class="bar-wrap"><div class="bar"></div></div>
   </div>
 
@@ -63,9 +63,14 @@
       try {
         const res  = await fetch("app.jsx");
         const src  = await res.text();
-        const code = Babel.transform(src, { presets: ["react"] }).code;
+        const code = Babel.transform(src, {
+          presets: ["react"],
+          plugins: []
+        }).code;
         // eslint-disable-next-line no-new-func
         new Function(code)();
+
+        if (!window.VaxTrack) throw new Error("VaxTrack not found — wrong file uploaded? Upload app.jsx, not VaxTrack.jsx");
 
         const root = ReactDOM.createRoot(document.getElementById("root"));
         root.render(React.createElement(window.VaxTrack));
@@ -75,10 +80,12 @@
         setTimeout(() => splash.remove(), 500);
       } catch (err) {
         document.getElementById("splash").innerHTML =
-          '<div style="padding:32px;text-align:center">' +
-          '<p style="font-size:18px;font-weight:700">Could not load app</p>' +
-          '<p style="margin-top:8px;opacity:0.8;font-size:13px">' + err.message + '</p>' +
-          '<p style="margin-top:16px;opacity:0.7;font-size:12px">Check internet connection and refresh.</p>' +
+          '<div style="padding:32px;text-align:center;font-family:system-ui">' +
+          '<p style="font-size:20px">⚠️</p>' +
+          '<p style="font-size:16px;font-weight:700;margin-top:8px">App failed to load</p>' +
+          '<p style="margin-top:10px;background:rgba(0,0,0,0.2);border-radius:8px;padding:10px;font-size:12px;text-align:left;word-break:break-word">' + err.message + '</p>' +
+          '<button onclick="location.reload()" style="margin-top:20px;background:white;color:#1565c0;border:none;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:700;cursor:pointer">↻ Reload</button>' +
+          '<p style="margin-top:14px;opacity:0.7;font-size:11px">Make sure you uploaded <b>app.jsx</b> (not VaxTrack.jsx) and <b>sw.js</b></p>' +
           '</div>';
       }
     })();

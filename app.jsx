@@ -844,12 +844,12 @@ function IAPChartInline({ children, logs }) {
 // ── localStorage helper ──────────────────────────────────────────
 function lsGet(key, fallback) {
   try {
-    const v = localStorage.getItem(key);
+    var v = localStorage.getItem(key);
     return v !== null ? JSON.parse(v) : fallback;
-  } catch { return fallback; }
+  } catch(e) { return fallback; }
 }
 function lsSet(key, value) {
-  try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch(e) {}
 }
 
 // ── Main App ─────────────────────────────────────────────────────
