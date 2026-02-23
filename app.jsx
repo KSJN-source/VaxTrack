@@ -1685,7 +1685,6 @@ function VaxTrack() {
                                   <div style={{ fontSize:16, fontWeight:800, color:"#1f2937" }}>{vaccine.name}</div>
                                   <div style={{ fontSize:13, fontWeight:600, color:"#6b7280", marginTop:2 }}>{dose.label} · {dose.age}</div>
                                   <div style={{ fontSize:12, color:"#adb5bd", fontWeight:500, marginTop:2 }}>{vaccine.fullName}</div>
-                                  {logged && <div style={{ fontSize:12, color:"#3b9edd", fontWeight:700, marginTop:5 }}>🏥 {logged.provider || "Logged"} · {formatDate(logged.date)}</div>}
                                   {/* Action buttons below the name */}
                                   <div style={{ display:"flex", gap:6, marginTop:10 }} onClick={e => e.stopPropagation()}>
                                     <button onClick={e=>quickGiven(dose.id,dose.ageMonths,e)}
@@ -2179,14 +2178,14 @@ function VaxTrack() {
       <div style={{ position:"fixed", bottom:0, left:"50%", transform:"translateX(-50%)", width:"100%", maxWidth:480, background:"white", borderTop:"1px solid #f3f4f6", display:"flex", zIndex:100, paddingLeft:"max(12px, env(safe-area-inset-left))", paddingRight:"max(12px, env(safe-area-inset-right))", paddingBottom:"max(16px, env(safe-area-inset-bottom))" }}>
         {[["vaccines","💉","Vaccines"],["schedule","🗓️","Schedule"]].map(([t,icon,label]) => (
           <div key={t} onClick={() => setTab(t)} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:2, padding:"8px 0", cursor:"pointer", color:tab===t?"#1565c0":"#9ca3af" }}>
-            <div style={{ fontSize:22, lineHeight:1 }}>{icon}</div>
-            <div style={{ fontSize:10, fontWeight:700 }}>{label}</div>
+            <div style={{ fontSize:26, lineHeight:1 }}>{icon}</div>
+            <div style={{ fontSize:11, fontWeight:700 }}>{label}</div>
           </div>
         ))}
 
         {/* IAP Chart */}
         <div onClick={() => setTab("iap")} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:2, padding:"8px 0", cursor:"pointer" }}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
             <rect x="1" y="1" width="22" height="22" rx="3" fill="white" stroke={tab==="iap"?"#1565c0":"#d1d5db"} strokeWidth="1.5"/>
             <rect x="1" y="1" width="22" height="7" rx="3" fill="#1565c0"/>
             <rect x="1" y="5" width="22" height="3" fill="#1565c0"/>
@@ -2202,13 +2201,13 @@ function VaxTrack() {
             <rect x="18" y="13.5" width="5" height="4" rx="0.5" fill="#93c5fd"/>
             <rect x="2"  y="18.5" width="6" height="4" rx="0.5" fill="#86efac"/>
           </svg>
-          <div style={{ fontSize:10, fontWeight:700, color:tab==="iap"?"#1565c0":"#9ca3af" }}>IAP Chart</div>
+          <div style={{ fontSize:11, fontWeight:700, color:tab==="iap"?"#1565c0":"#9ca3af" }}>IAP Chart</div>
         </div>
 
         {/* Settings */}
         <div onClick={() => setTab("settings")} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:2, padding:"8px 0", cursor:"pointer", color:tab==="settings"?"#1565c0":"#9ca3af" }}>
-          <div style={{ fontSize:22, lineHeight:1 }}>⚙️</div>
-          <div style={{ fontSize:10, fontWeight:700 }}>Settings</div>
+          <div style={{ fontSize:26, lineHeight:1 }}>⚙️</div>
+          <div style={{ fontSize:11, fontWeight:700 }}>Settings</div>
         </div>
       </div>
 
