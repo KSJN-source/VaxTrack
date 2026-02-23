@@ -841,28 +841,49 @@ function IAPChartInline({ children, logs }) {
   );
 }
 
+// ── localStorage helper ──────────────────────────────────────────
+function lsGet(key, fallback) {
+  try {
+    const v = localStorage.getItem(key);
+    return v !== null ? JSON.parse(v) : fallback;
+  } catch { return fallback; }
+}
+function lsSet(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
+}
+
 // ── Main App ─────────────────────────────────────────────────────
 function VaxTrack() {
-  const [children,        setChildren]        = useState(DEFAULT_CHILDREN);
-  const [logs,            setLogs]            = useState(DEFAULT_LOGS);
-  const [currentChildId,  setCurrentChildId]  = useState(DEFAULT_CHILDREN[0].id);
+  const [children,        setChildren]        = useState(() => lsGet("vt_children", DEFAULT_CHILDREN));
+  const [logs,            setLogs]            = useState(() => lsGet("vt_logs", DEFAULT_LOGS));
+  const [currentChildId,  setCurrentChildId]  = useState(() => lsGet("vt_currentChildId", DEFAULT_CHILDREN[0].id));
   const [tab,             setTab]             = useState("vaccines");
   const [filter,          setFilter]          = useState("all");
   const [expanded,        setExpanded]        = useState({});
   const [showAddChild,    setShowAddChild]     = useState(false);
   const [editingChild,    setEditingChild]     = useState(null);
   const [logModal,        setLogModal]         = useState(null);
-  const [defaultProvider, setDefaultProvider] = useState("Rainbow Hospital");
-  const [savedProviders,  setSavedProviders]  = useState(["Rainbow Hospital"]);
+  const [defaultProvider, setDefaultProvider] = useState(() => lsGet("vt_defaultProvider", "Rainbow Hospital"));
+  const [savedProviders,  setSavedProviders]  = useState(() => lsGet("vt_savedProviders", ["Rainbow Hospital"]));
   const [newProviderInput,setNewProviderInput]= useState("");
-  const [vaccineView,     setVaccineView]     = useState("timeline"); // "cards" | "timeline"
-  const [sortOrder,       setSortOrder]       = useState("desc"); // "desc" = latest first (default), "asc" = oldest first
+  const [vaccineView,     setVaccineView]     = useState(() => lsGet("vt_vaccineView", "timeline"));
+  const [sortOrder,       setSortOrder]       = useState(() => lsGet("vt_sortOrder", "desc"));
   const [showIAPChart,    setShowIAPChart]     = useState(false);
   const [pdfExporting,    setPdfExporting]     = useState(null);
-  const [whatsappNumber,  setWhatsappNumber]   = useState("");
+  const [whatsappNumber,  setWhatsappNumber]   = useState(() => lsGet("vt_whatsappNumber", ""));
   const [waSharing,       setWaSharing]        = useState(null);
   const [settingsTab,     setSettingsTab]      = useState("general");
-  const [reportChild,     setReportChild]      = useState(null); // in-app report modal
+  const [reportChild,     setReportChild]      = useState(null);
+
+  // ── Persist to localStorage on every change ──────────────────
+  useEffect(() => { lsSet("vt_children",        children);        }, [children]);
+  useEffect(() => { lsSet("vt_logs",            logs);            }, [logs]);
+  useEffect(() => { lsSet("vt_currentChildId",  currentChildId);  }, [currentChildId]);
+  useEffect(() => { lsSet("vt_defaultProvider", defaultProvider); }, [defaultProvider]);
+  useEffect(() => { lsSet("vt_savedProviders",  savedProviders);  }, [savedProviders]);
+  useEffect(() => { lsSet("vt_vaccineView",     vaccineView);     }, [vaccineView]);
+  useEffect(() => { lsSet("vt_sortOrder",       sortOrder);       }, [sortOrder]);
+  useEffect(() => { lsSet("vt_whatsappNumber",  whatsappNumber);  }, [whatsappNumber]);
   const firstSoonRef = useRef(null);
   const firstOverdueRef = useRef(null);
   const stickyRef = useRef(null);
