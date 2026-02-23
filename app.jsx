@@ -233,7 +233,7 @@ function getVaccineStatus(vaccine, ageMonths, logs) {
 const pill = st => {
   const m = { done:["#eff6ff","#1565c0"], next:["#fff4ec","#b45309"], late:["#ffeef0","#e63946"], future:["#f3f4f6","#6b7280"] };
   const [bg,c] = m[st] || m.future;
-  return { padding:"3px 9px", borderRadius:99, fontSize:11, fontWeight:700, background:bg, color:c };
+  return { padding:"4px 10px", borderRadius:99, fontSize:12, fontWeight:700, background:bg, color:c };
 };
 const badgeStyle = st => {
   const m = { completed:["#eff6ff","#1565c0"], overdue:["#ffeef0","#e63946"], upcoming:["#fff4ec","#b45309"], notdue:["#eaf2f8","#457b9d"] };
@@ -1293,7 +1293,7 @@ function VaxTrack() {
     <div style={{ fontFamily:"'Segoe UI',system-ui,sans-serif", background:"#f0f7f5", minHeight:"100vh", maxWidth:480, margin:"0 auto", color:"#111827" }}>
 
       {/* ── Header ── */}
-      <div style={{ background:"linear-gradient(135deg,#1565c0,#3b9edd)", padding:"28px 16px 12px", color:"white" }}>
+      <div style={{ position:"sticky", top:0, zIndex:100, background:"rgba(21,101,192,0.82)", backdropFilter:"blur(16px)", WebkitBackdropFilter:"blur(16px)", padding:"28px 16px 12px", color:"white" }}>
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:10 }}>
           <div style={{ display:"flex", alignItems:"center", gap:8 }}>
             <span style={{ fontSize:20 }}>💉</span>
@@ -1601,9 +1601,8 @@ function VaxTrack() {
 
               const now = new Date();
               return (
-                <div style={{ position:"relative", paddingLeft:30 }}>
-                  {/* Vertical spine */}
-                  <div style={{ position:"absolute", left:12, top:6, bottom:6, width:2, background:"linear-gradient(to bottom,#3b9edd,#e5e7eb)" }} />
+                <div style={{ position:"relative", paddingLeft:0 }}>
+                  {/* Vertical spine removed */}
 
                   {groups.map((group, gi) => {
                     const isPast   = group.date < now;
@@ -1636,8 +1635,6 @@ function VaxTrack() {
 
                     return (
                       <div key={group.key} ref={isFirstOverdue ? firstOverdueRef : isFirstSoon ? firstSoonRef : null} style={{ position:"relative", marginBottom:14, opacity: isFutureOtherYear ? 0.38 : 1, filter: isFutureOtherYear ? "grayscale(0.4)" : "none", transition:"opacity 0.2s" }}>
-                        {/* Timeline dot */}
-                        <div style={{ position:"absolute", left:-(dotSize/2+12), top:14, width:dotSize, height:dotSize, borderRadius:"50%", background:bgColor, border:"2.5px solid white", boxShadow:"0 1px 3px rgba(0,0,0,0.08)", transition:"all 0.2s" }} />
 
                         {/* Unified card: date header + dose rows together */}
                         <div style={{
@@ -1685,11 +1682,11 @@ function VaxTrack() {
                                 onTouchStart={e => e.currentTarget.style.background="#f0f7ff"}
                                 onTouchEnd={e => e.currentTarget.style.background=""}
                                 style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 12px", borderBottom:rowBorder, cursor:"pointer", transition:"background 0.15s" }}>
-                                <div style={{ width:32, height:32, borderRadius:8, background:stBg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, flexShrink:0 }}>{vaccine.icon}</div>
+                                <div style={{ width:34, height:34, borderRadius:8, background:stBg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:17, flexShrink:0 }}>{vaccine.icon}</div>
                                 <div style={{ flex:1, minWidth:0 }}>
-                                  <div style={{ fontSize:13, fontWeight:800, color:"#1f2937", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{vaccine.name} <span style={{ fontWeight:600, color:"#6b7280" }}>— {dose.label}</span></div>
-                                  <div style={{ fontSize:11, color:"#9ca3af", fontWeight:600, marginTop:1 }}>{vaccine.fullName}</div>
-                                  {logged && <div style={{ fontSize:10, color:"#3b9edd", fontWeight:700, marginTop:2 }}>🏥 {logged.provider || "Logged"} · {formatDate(logged.date)}</div>}
+                                  <div style={{ fontSize:15, fontWeight:800, color:"#1f2937", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{vaccine.name} <span style={{ fontWeight:600, color:"#6b7280" }}>— {dose.label}</span></div>
+                                  <div style={{ fontSize:12, color:"#9ca3af", fontWeight:600, marginTop:1 }}>{vaccine.fullName}</div>
+                                  {logged && <div style={{ fontSize:11, color:"#3b9edd", fontWeight:700, marginTop:2 }}>🏥 {logged.provider || "Logged"} · {formatDate(logged.date)}</div>}
                                 </div>
                                 <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", gap:5, flexShrink:0 }}>
                                   <span style={{ fontSize:10, fontWeight:800, color:stColor, background:stBg, borderRadius:5, padding:"2px 8px" }}>
@@ -1725,8 +1722,8 @@ function VaxTrack() {
                   {sortOrder==="desc" ? "↑ Latest first" : "↓ Oldest first"}
                 </button>
               </div>
-            <div style={{ position:"relative", paddingLeft:28, marginTop:4 }}>
-              <div style={{ position:"absolute", left:10, top:0, bottom:0, width:2, background:"linear-gradient(to bottom,#e5e7eb,#3b9edd)" }} />
+            <div style={{ position:"relative", paddingLeft:0, marginTop:4 }}>
+              {/* Vertical spine removed */}
               {(sortOrder==="desc" ? [...AGE_MILESTONES].reverse() : AGE_MILESTONES).map(milestone => {
                 const here = [];
                 CDC_VACCINES.forEach(v => v.doses.forEach(d => {
@@ -1752,8 +1749,6 @@ function VaxTrack() {
 
                 return (
                   <div key={milestone.label} style={{ position:"relative", marginBottom:16, opacity: isFutureOtherYear ? 0.38 : 1, filter: isFutureOtherYear ? "grayscale(0.4)" : "none", transition:"opacity 0.2s" }}>
-                    {/* Timeline dot */}
-                    <div style={{ position:"absolute", left:-(dotSize/2+12), top:14, width:dotSize, height:dotSize, borderRadius:"50%", background:dotC, border:"2.5px solid white", boxShadow:"none" }} />
 
                     {/* Unified card: date header + vaccine pills */}
                     <div style={{
