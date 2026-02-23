@@ -1309,13 +1309,13 @@ function VaxTrack() {
     <div style={{ fontFamily:"'Segoe UI',system-ui,sans-serif", background:"#f0f7f5", minHeight:"100vh", maxWidth:480, margin:"0 auto", color:"#111827" }}>
 
       {/* ── Header ── */}
-      <div style={{ position:"sticky", top:0, zIndex:100, background:"rgba(21,101,192,0.82)", backdropFilter:"blur(16px)", WebkitBackdropFilter:"blur(16px)", padding:"28px 16px 12px", color:"white" }}>
+      <div style={{ position:"sticky", top:"env(safe-area-inset-top)", zIndex:100, background:"rgba(21,101,192,0.65)", backdropFilter:"blur(16px)", WebkitBackdropFilter:"blur(16px)", padding:"12px 16px 12px", color:"white" }}>
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:10 }}>
           <div style={{ display:"flex", alignItems:"center", gap:8 }}>
             <span style={{ fontSize:20 }}>💉</span>
             <div>
               <div style={{ fontWeight:900, fontSize:22, letterSpacing:-0.5 }}>VaxTrack</div>
-              <div style={{ fontSize:10, opacity:0.8, marginTop:0 }}>IAP Immunization Log · India</div>
+              <div style={{ fontSize:10, opacity:0.8, marginTop:0 }}>IAP Immunization Log</div>
             </div>
           </div>
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
