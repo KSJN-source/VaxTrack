@@ -1470,12 +1470,11 @@ function VaxTrack() {
               }).join("  ·  ");
               return (
                 <div key={vaccine.id} style={{ background:"white", borderRadius:10, marginBottom:10, overflow:"hidden", borderLeft:`4px solid ${bdrC[vstatus]||"#e5e7eb"}` }}>
-                  <div style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 14px 10px", cursor:"pointer" }}
+                  <div style={{ display:"flex", alignItems:"center", gap:10, padding:"12px 14px 10px", cursor:"pointer" }}
                     onClick={() => setExpanded(p=>({...p,[vaccine.id]:!p[vaccine.id]}))}>
-                    <div style={{ width:40, height:40, borderRadius:10, background:iconBg[vstatus]||"#f3f4f6", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>{vaccine.icon}</div>
                     <div style={{ flex:1, minWidth:0 }}>
-                      <div style={{ fontSize:14, fontWeight:800, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{vaccine.name}</div>
-                      <div style={{ fontSize:11, color:"#6b7280", fontWeight:600, marginTop:1 }}>{vaccine.fullName}</div>
+                      <div style={{ fontSize:15, fontWeight:900, color:"#1f2937", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{vaccine.name}</div>
+                      <div style={{ fontSize:12, color:"#6b7280", fontWeight:600, marginTop:2 }}>{vaccine.fullName}</div>
                     </div>
                     <div style={badgeStyle(vstatus)}>{badgeTxt}</div>
                     <div style={{ fontSize:12, color:"#9ca3af", marginLeft:2 }}>{isOpen?"▲":"▼"}</div>
@@ -1551,16 +1550,11 @@ function VaxTrack() {
                                 </div>
                               )}
                             </div>
-                            <div style={{ display:"flex", gap:0, borderTop:`1px solid ${cardBorder}` }}>
-                              <button onClick={e => quickGiven(dose.id, dose.ageMonths, e)}
-                                style={{ flex:1, padding:"9px 0", fontSize:12, fontWeight:800, border:"none", cursor:"pointer", background:logged?"#52b788":"#f0faf5", color:logged?"white":"#1565c0", borderBottomLeftRadius:8, transition:"all 0.15s" }}>
-                                ✓ Given
-                              </button>
-                              <div style={{ width:1, background:cardBorder }} />
-                              <button onClick={e => quickRemove(dose.id, e)}
-                                style={{ flex:1, padding:"9px 0", fontSize:12, fontWeight:800, border:"none", cursor:"pointer", background:logged?"#ffeef0":"#fafafa", color:logged?"#e63946":"#d1d5db", borderBottomRightRadius:8, transition:"all 0.15s" }}>
-                                Not Given
-                              </button>
+                            <div style={{ display:"flex", gap:6, padding:"8px 12px 10px", borderTop:`1px solid ${cardBorder}` }}>
+                              <button onClick={e => logged ? quickRemove(dose.id, e) : quickGiven(dose.id, dose.ageMonths, e)}
+                                style={{ padding:"7px 16px", fontSize:12, fontWeight:800, border:"none", borderRadius:8, cursor:"pointer", background:logged?"#52b788":"#eff6ff", color:logged?"white":"#1565c0", transition:"all 0.15s" }}>{logged?"✓ Given":"Mark Given"}</button>
+                              <button onClick={() => setLogModal({ vaccineId:vaccine.id, doseId:dose.id })}
+                                style={{ padding:"7px 12px", fontSize:12, fontWeight:700, border:"1.5px solid #e5e7eb", borderRadius:8, cursor:"pointer", background:"white", color:"#9ca3af" }}>Details</button>
                             </div>
                           </div>
                         );
@@ -1685,10 +1679,8 @@ function VaxTrack() {
                                   <div style={{ fontSize:12, color:"#adb5bd", fontWeight:500, marginTop:2 }}>{vaccine.fullName}</div>
                                   {/* Action buttons below the name */}
                                   <div style={{ display:"flex", gap:6, marginTop:10 }} onClick={e => e.stopPropagation()}>
-                                    <button onClick={e=>quickGiven(dose.id,dose.ageMonths,e)}
-                                      style={{ padding:"6px 16px", fontSize:12, fontWeight:800, border:"none", borderRadius:8, cursor:"pointer", background:logged?"#52b788":"#eff6ff", color:logged?"white":"#1565c0" }}>✓ {logged?"Given":"Mark Given"}</button>
-                                    {logged && <button onClick={e=>quickRemove(dose.id,e)}
-                                      style={{ padding:"6px 14px", fontSize:12, fontWeight:800, border:"none", borderRadius:8, cursor:"pointer", background:"#ffeef0", color:"#e63946" }}>✕ Remove</button>}
+                                    <button onClick={e => logged ? quickRemove(dose.id, e) : quickGiven(dose.id,dose.ageMonths,e)}
+                                      style={{ padding:"6px 16px", fontSize:12, fontWeight:800, border:"none", borderRadius:8, cursor:"pointer", background:logged?"#52b788":"#eff6ff", color:logged?"white":"#1565c0" }}>{logged?"✓ Given":"Mark Given"}</button>
                                     <button onClick={e=>{e.stopPropagation();setLogModal({vaccineId:vaccine.id,doseId:dose.id})}}
                                       style={{ padding:"6px 12px", fontSize:12, fontWeight:700, border:"1.5px solid #e5e7eb", borderRadius:8, cursor:"pointer", background:"white", color:"#9ca3af" }}>Details</button>
                                   </div>
@@ -1699,7 +1691,7 @@ function VaxTrack() {
                                     {st==="logged"?"✓ Given":st==="overdue"?"⚠ Overdue":st==="upcoming"?"⏰ Soon":"○ Future"}
                                   </span>
                                   {logged && <span style={{ fontSize:10, fontWeight:600, color:"#6b7280", textAlign:"right" }}>{formatDate(logged.date)}</span>}
-                                  {logged && logged.provider && <span style={{ fontSize:10, fontWeight:600, color:"#adb5bd", textAlign:"right", maxWidth:110, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>🏥 {logged.provider}</span>}
+                                  {logged && logged.provider && <span style={{ fontSize:10, fontWeight:600, color:"#adb5bd", textAlign:"right", maxWidth:110, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{logged.provider}</span>}
                                 </div>
                               </div>
                             );
@@ -1717,11 +1709,17 @@ function VaxTrack() {
           {tab === "schedule" && (
             <div>
               <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 }}>
-                {/* Records link */}
-                <button onClick={() => setTab("records")}
-                  style={{ display:"flex", alignItems:"center", gap:5, background:"white", border:"1.5px solid #e5e7eb", borderRadius:8, padding:"5px 11px", fontSize:11, fontWeight:800, color:"#1565c0", cursor:"pointer" }}>
-                  📋 Records
-                </button>
+                {/* Schedule / Records toggle */}
+                <div style={{ display:"flex", background:"#f3f4f6", borderRadius:10, padding:3 }}>
+                  <button
+                    style={{ padding:"5px 13px", borderRadius:8, border:"none", cursor:"pointer", fontFamily:"inherit", fontSize:12, fontWeight:800, background:"#1565c0", color:"white", boxShadow:"0 1px 3px rgba(0,0,0,0.12)" }}>
+                    🗓️ Schedule
+                  </button>
+                  <button onClick={() => setTab("records")}
+                    style={{ padding:"5px 13px", borderRadius:8, border:"none", cursor:"pointer", fontFamily:"inherit", fontSize:12, fontWeight:800, background:"transparent", color:"#9ca3af" }}>
+                    📋 Records
+                  </button>
+                </div>
                 <button onClick={() => setSortOrder(o => o==="desc"?"asc":"desc")}
                   style={{ display:"flex", alignItems:"center", gap:4, background:"white", border:"1.5px solid #e5e7eb", borderRadius:8, padding:"5px 10px", fontSize:11, fontWeight:800, color:"#6b7280", cursor:"pointer" }}>
                   {sortOrder==="desc" ? "↑ Latest first" : "↓ Oldest first"}
