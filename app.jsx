@@ -1681,8 +1681,6 @@ function VaxTrack() {
                                 onMouseUp={e => e.currentTarget.style.background=""}
                                 onMouseLeave={e => e.currentTarget.style.background=""}
                                 style={{ display:"flex", alignItems:"flex-start", gap:14, padding:"16px 14px", borderBottom:rowBorder, cursor:"pointer", transition:"background 0.15s" }}>
-                                {/* Icon — no background, just the emoji */}
-                                <div style={{ fontSize:28, lineHeight:1, flexShrink:0, marginTop:2 }}>{vaccine.icon}</div>
                                 <div style={{ flex:1, minWidth:0 }}>
                                   <div style={{ fontSize:16, fontWeight:800, color:"#1f2937" }}>{vaccine.name}</div>
                                   <div style={{ fontSize:13, fontWeight:600, color:"#6b7280", marginTop:2 }}>{dose.label} · {dose.age}</div>
