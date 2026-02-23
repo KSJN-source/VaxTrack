@@ -1,4 +1,3 @@
-/* globals injected by index.html */
 const { useState, useRef } = React;
 
 
@@ -1341,7 +1340,7 @@ function VaxTrack() {
       </div>
 
       {/* ── Main ── */}
-      <div style={{ padding:"18px 14px 90px" }}>
+      <div style={{ padding:"18px 14px 110px" }}>
         {!currentChild ? (
           <div style={{ textAlign:"center", padding:"60px 24px" }}>
             <div style={{ fontSize:64, marginBottom:16 }}>👶</div>
@@ -1634,7 +1633,7 @@ function VaxTrack() {
                     const isFirstOverdue = hasLate && gi === groups.findIndex(g => g.items.some(i=>i.st==="overdue"));
 
                     return (
-                      <div key={group.key} ref={isFirstOverdue ? firstOverdueRef : isFirstSoon ? firstSoonRef : null} style={{ position:"relative", marginBottom:14, opacity: isFutureOtherYear ? 0.38 : 1, filter: isFutureOtherYear ? "grayscale(0.4)" : "none", transition:"opacity 0.2s" }}>
+                      <div key={group.key} ref={isFirstOverdue ? firstOverdueRef : isFirstSoon ? firstSoonRef : null} style={{ position:"relative", marginBottom:20, opacity: isFutureOtherYear ? 0.38 : 1, filter: isFutureOtherYear ? "grayscale(0.4)" : "none", transition:"opacity 0.2s" }}>
 
                         {/* Unified card: date header + dose rows together */}
                         <div style={{
@@ -1643,9 +1642,9 @@ function VaxTrack() {
                           border: hasLate?"2px solid #fca5a5":hasSoon||isCurrentYearUpcoming?"2px solid #f4a261":allDone?"1px solid #e5e7eb":"1px solid #e5e7eb"
                         }}>
                           {/* Date header row inside the card */}
-                          <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap", padding:"8px 12px",
+                          <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap", padding:"10px 14px",
                             background: hasLate?"#fff5f5":hasSoon||isCurrentYearUpcoming?"#fffbeb":allDone?"#f8fbff":"#fafafa",
-                            borderBottom:"1px solid #f3f4f6"
+                            borderBottom:"1px solid #f0f2f5"
                           }}>
                             {/* Year pill */}
                             <div style={{ background: allDone?"#64a9e0":hasLate?"#b91c1c":hasSoon?"#b45309":group.date>=now?"#1565c0":"#6b7280", borderRadius:7, padding:"3px 10px" }}>
@@ -1671,36 +1670,38 @@ function VaxTrack() {
                           {/* Dose rows */}
                           {group.items.map((item, ii) => {
                             const { vaccine, dose, st, logged } = item;
-                            const rowBorder = ii < group.items.length-1 ? "1px solid #f3f4f6" : "none";
+                            const rowBorder = ii < group.items.length-1 ? "1px solid #f0f2f5" : "none";
                             const stColor = st==="logged"?"#3b9edd":st==="overdue"?"#e63946":st==="upcoming"?"#b45309":"#9ca3af";
                             const stBg    = st==="logged"?"#eff6ff":st==="overdue"?"#ffeef0":st==="upcoming"?"#fff4ec":"#f3f4f6";
                             return (
                               <div key={dose.id} onClick={() => setLogModal({vaccineId:vaccine.id, doseId:dose.id})}
-                                onMouseDown={e => e.currentTarget.style.background="#f0f7ff"}
+                                onTouchStart={e => e.currentTarget.style.background="#f5f9ff"}
+                                onTouchEnd={e => e.currentTarget.style.background=""}
+                                onMouseDown={e => e.currentTarget.style.background="#f5f9ff"}
                                 onMouseUp={e => e.currentTarget.style.background=""}
                                 onMouseLeave={e => e.currentTarget.style.background=""}
-                                onTouchStart={e => e.currentTarget.style.background="#f0f7ff"}
-                                onTouchEnd={e => e.currentTarget.style.background=""}
-                                style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 12px", borderBottom:rowBorder, cursor:"pointer", transition:"background 0.15s" }}>
-                                <div style={{ width:34, height:34, borderRadius:8, background:stBg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:17, flexShrink:0 }}>{vaccine.icon}</div>
+                                style={{ display:"flex", alignItems:"flex-start", gap:14, padding:"16px 14px", borderBottom:rowBorder, cursor:"pointer", transition:"background 0.15s" }}>
+                                {/* Icon — no background, just the emoji */}
+                                <div style={{ fontSize:28, lineHeight:1, flexShrink:0, marginTop:2 }}>{vaccine.icon}</div>
                                 <div style={{ flex:1, minWidth:0 }}>
-                                  <div style={{ fontSize:15, fontWeight:800, color:"#1f2937", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{vaccine.name} <span style={{ fontWeight:600, color:"#6b7280" }}>— {dose.label}</span></div>
-                                  <div style={{ fontSize:12, color:"#9ca3af", fontWeight:600, marginTop:1 }}>{vaccine.fullName}</div>
-                                  {logged && <div style={{ fontSize:11, color:"#3b9edd", fontWeight:700, marginTop:2 }}>🏥 {logged.provider || "Logged"} · {formatDate(logged.date)}</div>}
-                                </div>
-                                <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", gap:5, flexShrink:0 }}>
-                                  <span style={{ fontSize:10, fontWeight:800, color:stColor, background:stBg, borderRadius:5, padding:"2px 8px" }}>
-                                    {st==="logged"?"✓ Given":st==="overdue"?"⚠ Overdue":st==="upcoming"?"⏰ Soon":"○ Future"}
-                                  </span>
-                                  <div style={{ display:"flex", gap:4 }} onClick={e => e.stopPropagation()}>
+                                  <div style={{ fontSize:16, fontWeight:800, color:"#1f2937" }}>{vaccine.name}</div>
+                                  <div style={{ fontSize:13, fontWeight:600, color:"#6b7280", marginTop:2 }}>{dose.label} · {dose.age}</div>
+                                  <div style={{ fontSize:12, color:"#adb5bd", fontWeight:500, marginTop:2 }}>{vaccine.fullName}</div>
+                                  {logged && <div style={{ fontSize:12, color:"#3b9edd", fontWeight:700, marginTop:5 }}>🏥 {logged.provider || "Logged"} · {formatDate(logged.date)}</div>}
+                                  {/* Action buttons below the name */}
+                                  <div style={{ display:"flex", gap:6, marginTop:10 }} onClick={e => e.stopPropagation()}>
                                     <button onClick={e=>quickGiven(dose.id,dose.ageMonths,e)}
-                                      style={{ padding:"3px 10px", fontSize:11, fontWeight:800, border:"none", borderRadius:6, cursor:"pointer", background:logged?"#52b788":"#eff6ff", color:logged?"white":"#1565c0" }}>✓</button>
-                                    <button onClick={e=>quickRemove(dose.id,e)}
-                                      style={{ padding:"3px 10px", fontSize:11, fontWeight:800, border:"none", borderRadius:6, cursor:"pointer", background:logged?"#ffeef0":"#f3f4f6", color:logged?"#e63946":"#d1d5db" }}>✕</button>
+                                      style={{ padding:"6px 16px", fontSize:12, fontWeight:800, border:"none", borderRadius:8, cursor:"pointer", background:logged?"#52b788":"#eff6ff", color:logged?"white":"#1565c0" }}>✓ {logged?"Given":"Mark Given"}</button>
+                                    {logged && <button onClick={e=>quickRemove(dose.id,e)}
+                                      style={{ padding:"6px 14px", fontSize:12, fontWeight:800, border:"none", borderRadius:8, cursor:"pointer", background:"#ffeef0", color:"#e63946" }}>✕ Remove</button>}
                                     <button onClick={e=>{e.stopPropagation();setLogModal({vaccineId:vaccine.id,doseId:dose.id})}}
-                                      style={{ padding:"3px 8px", fontSize:11, fontWeight:700, border:"1px solid #e5e7eb", borderRadius:6, cursor:"pointer", background:"white", color:"#9ca3af" }}>···</button>
+                                      style={{ padding:"6px 12px", fontSize:12, fontWeight:700, border:"1.5px solid #e5e7eb", borderRadius:8, cursor:"pointer", background:"white", color:"#9ca3af" }}>Details</button>
                                   </div>
                                 </div>
+                                {/* Status badge — top right */}
+                                <span style={{ fontSize:11, fontWeight:800, color:stColor, background:stBg, borderRadius:6, padding:"4px 10px", flexShrink:0, marginTop:2 }}>
+                                  {st==="logged"?"✓ Given":st==="overdue"?"⚠ Overdue":st==="upcoming"?"⏰ Soon":"○ Future"}
+                                </span>
                               </div>
                             );
                           })}
@@ -1716,7 +1717,12 @@ function VaxTrack() {
           {/* ── Schedule tab ── */}
           {tab === "schedule" && (
             <div>
-              <div style={{ display:"flex", justifyContent:"flex-end", marginBottom:12 }}>
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 }}>
+                {/* Records link */}
+                <button onClick={() => setTab("records")}
+                  style={{ display:"flex", alignItems:"center", gap:5, background:"white", border:"1.5px solid #e5e7eb", borderRadius:8, padding:"5px 11px", fontSize:11, fontWeight:800, color:"#1565c0", cursor:"pointer" }}>
+                  📋 Records
+                </button>
                 <button onClick={() => setSortOrder(o => o==="desc"?"asc":"desc")}
                   style={{ display:"flex", alignItems:"center", gap:4, background:"white", border:"1.5px solid #e5e7eb", borderRadius:8, padding:"5px 10px", fontSize:11, fontWeight:800, color:"#6b7280", cursor:"pointer" }}>
                   {sortOrder==="desc" ? "↑ Latest first" : "↓ Oldest first"}
@@ -2172,8 +2178,8 @@ function VaxTrack() {
       </div>
 
       {/* ── Bottom Nav ── */}
-      <div style={{ position:"fixed", bottom:0, left:"50%", transform:"translateX(-50%)", width:"100%", maxWidth:480, background:"white", borderTop:"1px solid #f3f4f6", display:"flex", zIndex:100 }}>
-        {[["vaccines","💉","Vaccines"],["schedule","🗓️","Schedule"],["records","📋","Records"]].map(([t,icon,label]) => (
+      <div style={{ position:"fixed", bottom:0, left:"50%", transform:"translateX(-50%)", width:"100%", maxWidth:480, background:"white", borderTop:"1px solid #f3f4f6", display:"flex", zIndex:100, paddingLeft:"max(12px, env(safe-area-inset-left))", paddingRight:"max(12px, env(safe-area-inset-right))", paddingBottom:"max(16px, env(safe-area-inset-bottom))" }}>
+        {[["vaccines","💉","Vaccines"],["schedule","🗓️","Schedule"]].map(([t,icon,label]) => (
           <div key={t} onClick={() => setTab(t)} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:2, padding:"8px 0", cursor:"pointer", color:tab===t?"#1565c0":"#9ca3af" }}>
             <div style={{ fontSize:22, lineHeight:1 }}>{icon}</div>
             <div style={{ fontSize:10, fontWeight:700 }}>{label}</div>
