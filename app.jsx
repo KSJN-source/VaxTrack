@@ -1308,6 +1308,9 @@ function VaxTrack() {
   return (
     <div style={{ fontFamily:"'Segoe UI',system-ui,sans-serif", background:"#f0f7f5", minHeight:"100vh", maxWidth:480, margin:"0 auto", color:"#111827" }}>
 
+      {/* ── Status bar cover: fixed cap so content never shows above header ── */}
+      <div style={{ position:"fixed", top:0, left:"50%", transform:"translateX(-50%)", width:"100%", maxWidth:480, height:"env(safe-area-inset-top)", background:"rgba(21,101,192,0.97)", zIndex:200 }} />
+
       {/* ── Sticky header + sub-toolbar wrapper ── */}
       <div style={{ position:"sticky", top:"env(safe-area-inset-top)", zIndex:100 }}>
 
