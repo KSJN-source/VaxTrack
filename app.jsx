@@ -98,8 +98,8 @@ const AGE_MILESTONES = [
 ];
 
 const DEFAULT_CHILDREN = [
-  { id: "child_bella", name: "Bella Reddy", dob: "2017-10-28", emoji: "👧", color: "#f72585", photo: null },
-  { id: "child_reya",  name: "Reya Reddy",  dob: "2021-06-21", emoji: "👶", color: "#3b9edd", photo: null },
+  { id: "child_bella", name: "Bell", dob: "2017-10-28", emoji: "👧", color: "#f72585", photo: null },
+  { id: "child_reya",  name: "Rey",  dob: "2021-06-21", emoji: "👶", color: "#3b9edd", photo: null },
 ];
 
 // All doses per IAP (Indian Academy of Pediatrics) Immunization Schedule · Rainbow Hospital
