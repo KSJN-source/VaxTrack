@@ -867,11 +867,13 @@ function VaxTrack() {
   const firstOverdueRef = useRef(null);
   const stickyRef = useRef(null);
 
-  // Scroll element to just below the sticky header
+  // Scroll element to just below the sticky header (uses .bottom which includes safe-area-inset-top)
   function scrollToWithOffset(el) {
     if (!el) return;
-    const stickyH = stickyRef.current ? stickyRef.current.getBoundingClientRect().height : 130;
-    const top = el.getBoundingClientRect().top + window.scrollY - stickyH - 12;
+    const stickyBottom = stickyRef.current
+      ? stickyRef.current.getBoundingClientRect().bottom
+      : 140;
+    const top = el.getBoundingClientRect().top + window.scrollY - stickyBottom - 8;
     window.scrollTo({ top, behavior: "smooth" });
   }
 
@@ -1334,7 +1336,7 @@ function VaxTrack() {
             </div>
           </div>
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-            {late > 0 && <span onClick={() => { setTab("vaccines"); setVaccineView("timeline"); setTimeout(() => scrollToWithOffset(firstOverdueRef.current), 150); }}
+            {late > 0 && <span onClick={() => { setTab("vaccines"); setVaccineView("timeline"); setTimeout(() => scrollToWithOffset(firstOverdueRef.current), 220); }}
               style={{ fontSize:11, fontWeight:700, color:"#fca5a5", cursor:"pointer" }}>⚠ {late} overdue</span>}
             <button onClick={() => setShowAddChild(true)}
               style={{ background:"rgba(255,255,255,0.2)", border:"1.5px solid rgba(255,255,255,0.45)", color:"white", borderRadius:50, padding:"6px 13px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
@@ -1354,7 +1356,7 @@ function VaxTrack() {
           ))}
           <div style={{ flex:1 }} />
           {soon > 0 && (
-            <span onClick={() => { setTab("vaccines"); setVaccineView("timeline"); setTimeout(() => scrollToWithOffset(firstSoonRef.current), 150); }}
+            <span onClick={() => { setTab("vaccines"); setVaccineView("timeline"); setTimeout(() => scrollToWithOffset(firstSoonRef.current), 220); }}
               style={{ fontSize:10, fontWeight:700, color:"white", background:"#f4a261", borderRadius:99, padding:"3px 9px", cursor:"pointer", flexShrink:0, whiteSpace:"nowrap" }}>
               {soon} upcoming
             </span>
@@ -1457,7 +1459,7 @@ function VaxTrack() {
 
           {/* Stats — hidden on settings */}
           {tab !== "settings" && tab !== "iap" && <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:10, marginBottom:18 }}>
-            {[[done,"#3b9edd","Done",null],[soon,"#f4a261","Soon",() => { setTab("vaccines"); setVaccineView("timeline"); setTimeout(() => scrollToWithOffset(firstSoonRef.current), 150); }],[late,"#e63946","Overdue",() => { setTab("vaccines"); setVaccineView("timeline"); setTimeout(() => scrollToWithOffset(firstOverdueRef.current), 150); }]].map(([n,c,l,onClick]) => (
+            {[[done,"#3b9edd","Done",null],[soon,"#f4a261","Soon",() => { setTab("vaccines"); setVaccineView("timeline"); setTimeout(() => scrollToWithOffset(firstSoonRef.current), 220); }],[late,"#e63946","Overdue",() => { setTab("vaccines"); setVaccineView("timeline"); setTimeout(() => scrollToWithOffset(firstOverdueRef.current), 220); }]].map(([n,c,l,onClick]) => (
               <div key={l} onClick={onClick||undefined} style={{ background:"white", borderRadius:10, padding:12, textAlign:"center", cursor:onClick?"pointer":"default", border:onClick&&n>0?`1.5px solid ${c}33`:"1.5px solid transparent" }}>
                 <div style={{ fontSize:24, fontWeight:900, color:c, lineHeight:1 }}>{n}</div>
                 <div style={{ fontSize:10, fontWeight:600, color:"#6b7280", marginTop:2, textTransform:"uppercase", letterSpacing:0.5 }}>{l}</div>
