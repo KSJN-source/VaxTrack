@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#1565c0" />
+
+  <!-- PWA / iOS home screen -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="VaxTrack" />
+  <link rel="apple-touch-icon" href="icon-180.png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="icon-152.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png" />
+
+  <link rel="manifest" href="manifest.json" />
+  <title>VaxTrack</title>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { height: 100%; }
+    body {
+      height: 100%;
+      background: #1565c0;
+      padding-top: env(safe-area-inset-top);
+    }
+    #root { min-height: 100%; }
+
+    #splash {
+      position: fixed; inset: 0;
+      background: linear-gradient(135deg, #1565c0, #3b9edd);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      color: white; font-family: system-ui, -apple-system, sans-serif;
+      z-index: 9999; transition: opacity 0.4s ease;
+    }
+    #splash.fade { opacity: 0; pointer-events: none; }
+    #splash img { width: 80px; height: 80px; border-radius: 18px; margin-bottom: 18px; box-shadow: 0 4px 20px rgba(0,0,0,0.25); }
+    #splash h1 { font-size: 30px; font-weight: 900; letter-spacing: -0.5px; }
+    #splash p  { font-size: 13px; opacity: 0.8; margin-top: 4px; }
+    #splash .bar-wrap { margin-top: 36px; width: 120px; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; overflow: hidden; }
+    #splash .bar { height: 40%; width: 40%; background: white; border-radius: 2px; animation: slide 1.2s ease-in-out infinite; }
+    @keyframes slide { 0%{transform:translateX(-100%)} 100%{transform:translateX(300%)} }
+  </style>
+</head>
+<body>
+
+  <div id="splash">
+    <img src="icon-180.png" alt="" onerror="this.style.display='none'" />
+    <h1>VaxTrack</h1>
+    <p>IAP Immunization Log · India</p>
+    <div class="bar-wrap"><div class="bar"></div></div>
+  </div>
+
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script>
+    (async function () {
+      try {
+        const res  = await fetch("app.jsx");
+        const src  = await res.text();
+        const code = Babel.transform(src, { presets: ["react"] }).code;
+        // eslint-disable-next-line no-new-func
+        new Function(code)();
+
+        const root = ReactDOM.createRoot(document.getElementById("root"));
+        root.render(React.createElement(window.VaxTrack));
+
+        const splash = document.getElementById("splash");
+        splash.classList.add("fade");
+        setTimeout(() => splash.remove(), 500);
+      } catch (err) {
+        document.getElementById("splash").innerHTML =
+          '<div style="padding:32px;text-align:center">' +
+          '<p style="font-size:18px;font-weight:700">Could not load app</p>' +
+          '<p style="margin-top:8px;opacity:0.8;font-size:13px">' + err.message + '</p>' +
+          '<p style="margin-top:16px;opacity:0.7;font-size:12px">Check internet connection and refresh.</p>' +
+          '</div>';
+      }
+    })();
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("sw.js").catch(function () {});
+      });
+    }
+  </script>
+
+</body>
+</html>
