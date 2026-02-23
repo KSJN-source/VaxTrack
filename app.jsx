@@ -1308,8 +1308,11 @@ function VaxTrack() {
   return (
     <div style={{ fontFamily:"'Segoe UI',system-ui,sans-serif", background:"#f0f7f5", minHeight:"100vh", maxWidth:480, margin:"0 auto", color:"#111827" }}>
 
+      {/* ── Sticky header + sub-toolbar wrapper ── */}
+      <div style={{ position:"sticky", top:"env(safe-area-inset-top)", zIndex:100 }}>
+
       {/* ── Header ── */}
-      <div style={{ position:"sticky", top:"env(safe-area-inset-top)", zIndex:100, background:"rgba(21,101,192,0.65)", backdropFilter:"blur(16px)", WebkitBackdropFilter:"blur(16px)", padding:"12px 16px 12px", color:"white" }}>
+      <div style={{ background:"rgba(21,101,192,0.97)", backdropFilter:"blur(20px)", WebkitBackdropFilter:"blur(20px)", padding:"12px 16px 12px", color:"white" }}>
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:10 }}>
           <div style={{ display:"flex", alignItems:"center", gap:8 }}>
             <span style={{ fontSize:20 }}>💉</span>
@@ -1344,7 +1347,6 @@ function VaxTrack() {
               {soon} upcoming
             </span>
           )}
-          {/* Share icon */}
           {currentChild && <button onClick={() => exportPDF(currentChild)}
             style={{ background:"rgba(255,255,255,0.2)", border:"1.5px solid rgba(255,255,255,0.35)", borderRadius:8, padding:"5px 8px", color:"white", cursor:"pointer", flexShrink:0, lineHeight:1, display:"flex", alignItems:"center", justifyContent:"center" }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -1355,6 +1357,57 @@ function VaxTrack() {
           </button>}
         </div>}
       </div>
+
+      {/* ── Sub-toolbar (app background, separated from header) ── */}
+      {tab === "vaccines" && (
+        <div style={{ background:"#f0f7f5", borderBottom:"1px solid #d1dfe9", padding:"10px 14px", boxShadow:"0 2px 6px rgba(0,0,0,0.08)" }}>
+          {/* Row 1: toggle + sort */}
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+            <div style={{ display:"flex", background:"#dce8f0", borderRadius:10, padding:3 }}>
+              <button onClick={() => setVaccineView("timeline")}
+                style={{ padding:"6px 14px", borderRadius:8, border:"none", cursor:"pointer", fontFamily:"inherit", fontSize:12, fontWeight:800, background:vaccineView==="timeline"?"#1565c0":"transparent", color:vaccineView==="timeline"?"white":"#5a7a8a", boxShadow:vaccineView==="timeline"?"0 1px 4px rgba(0,0,0,0.15)":"none", transition:"all 0.15s" }}>
+                🕐 Timeline
+              </button>
+              <button onClick={() => setVaccineView("cards")}
+                style={{ padding:"6px 14px", borderRadius:8, border:"none", cursor:"pointer", fontFamily:"inherit", fontSize:12, fontWeight:800, background:vaccineView==="cards"?"#1565c0":"transparent", color:vaccineView==="cards"?"white":"#5a7a8a", boxShadow:vaccineView==="cards"?"0 1px 4px rgba(0,0,0,0.15)":"none", transition:"all 0.15s" }}>
+                📋 Cards
+              </button>
+            </div>
+            <button onClick={() => setSortOrder(o => o==="desc"?"asc":"desc")}
+              style={{ display:"flex", alignItems:"center", gap:4, background:"white", border:"1.5px solid #d1dfe9", borderRadius:8, padding:"6px 12px", fontSize:11, fontWeight:800, color:"#5a7a8a", cursor:"pointer", whiteSpace:"nowrap" }}>
+              {sortOrder==="desc" ? "↑ Latest" : "↓ Oldest"}
+            </button>
+          </div>
+          {/* Row 2: filter pills (cards only) */}
+          {vaccineView === "cards" && (
+            <div style={{ display:"flex", gap:6, marginTop:9 }}>
+              {[["all","All"],["due","Late"],["completed","✓ Done"],["upcoming","Soon"]].map(([f,l]) => (
+                <div key={f} onClick={() => setFilter(f)}
+                  style={{ background:filter===f?"#1565c0":"white", border:`1.5px solid ${filter===f?"#1565c0":"#d1dfe9"}`, borderRadius:99, padding:"5px 13px", fontSize:12, fontWeight:700, cursor:"pointer", color:filter===f?"white":"#5a7a8a", whiteSpace:"nowrap" }}>{l}</div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+      {(tab === "schedule" || tab === "records") && (
+        <div style={{ background:"#f0f7f5", borderBottom:"1px solid #d1dfe9", padding:"10px 14px", display:"flex", alignItems:"center", justifyContent:"space-between", boxShadow:"0 2px 6px rgba(0,0,0,0.08)" }}>
+          <div style={{ display:"flex", background:"#dce8f0", borderRadius:10, padding:3 }}>
+            <button onClick={() => setTab("schedule")}
+              style={{ padding:"6px 14px", borderRadius:8, border:"none", cursor:"pointer", fontFamily:"inherit", fontSize:12, fontWeight:800, background:tab==="schedule"?"#1565c0":"transparent", color:tab==="schedule"?"white":"#5a7a8a", boxShadow:tab==="schedule"?"0 1px 4px rgba(0,0,0,0.15)":"none", transition:"all 0.15s" }}>
+              🗓️ Schedule
+            </button>
+            <button onClick={() => setTab("records")}
+              style={{ padding:"6px 14px", borderRadius:8, border:"none", cursor:"pointer", fontFamily:"inherit", fontSize:12, fontWeight:800, background:tab==="records"?"#1565c0":"transparent", color:tab==="records"?"white":"#5a7a8a", boxShadow:tab==="records"?"0 1px 4px rgba(0,0,0,0.15)":"none", transition:"all 0.15s" }}>
+              📋 Records
+            </button>
+          </div>
+          <button onClick={() => setSortOrder(o => o==="desc"?"asc":"desc")}
+            style={{ display:"flex", alignItems:"center", gap:4, background:"white", border:"1.5px solid #d1dfe9", borderRadius:8, padding:"6px 12px", fontSize:11, fontWeight:800, color:"#5a7a8a", cursor:"pointer" }}>
+            {sortOrder==="desc" ? "↑ Latest" : "↓ Oldest"}
+          </button>
+        </div>
+      )}
+      </div>{/* end sticky wrapper */}
 
       {/* ── Main ── */}
       <div style={{ padding:"18px 14px 110px" }}>
@@ -1402,44 +1455,6 @@ function VaxTrack() {
 
           {/* ── Vaccines tab ── */}
           {tab === "vaccines" && (<>
-            {/* Toggle + filter row */}
-            <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:14 }}>
-              {/* View toggle — Timeline / Cards */}
-              <div style={{ display:"flex", background:"#f3f4f6", borderRadius:10, padding:3, flexShrink:0 }}>
-                <button onClick={() => setVaccineView("timeline")}
-                  style={{ padding:"5px 12px", borderRadius:8, border:"none", cursor:"pointer", fontFamily:"inherit", fontSize:12, fontWeight:800, background:vaccineView==="timeline"?"white":"transparent", color:vaccineView==="timeline"?"#1565c0":"#9ca3af", boxShadow:vaccineView==="timeline"?"0 1px 3px rgba(0,0,0,0.08)":"none", transition:"all 0.15s" }}>
-                  🕐 Timeline
-                </button>
-                <button onClick={() => setVaccineView("cards")}
-                  style={{ padding:"5px 12px", borderRadius:8, border:"none", cursor:"pointer", fontFamily:"inherit", fontSize:12, fontWeight:800, background:vaccineView==="cards"?"white":"transparent", color:vaccineView==="cards"?"#1565c0":"#9ca3af", boxShadow:vaccineView==="cards"?"0 1px 3px rgba(0,0,0,0.08)":"none", transition:"all 0.15s" }}>
-                  📋 Cards
-                </button>
-
-              </div>
-              {/* Filter pills — only in card view */}
-              {vaccineView === "cards" && <div style={{ display:"flex", gap:5, overflowX:"auto", flex:1 }}>
-                {[["all","All"],["due","Late"],["completed","✓"],["upcoming","Soon"]].map(([f,l]) => (
-                  <div key={f} onClick={() => setFilter(f)}
-                    style={{ background:filter===f?"#1565c0":"white", border:`1px solid ${filter===f?"#1565c0":"#e5e7eb"}`, borderRadius:99, padding:"1px 7px", fontSize:9, fontWeight:700, cursor:"pointer", color:filter===f?"white":"#6b7280", whiteSpace:"nowrap", flexShrink:0 }}>{l}</div>
-                ))}
-              </div>}
-              {/* Sort toggle — timeline only in its row, cards gets own row below */}
-              {vaccineView === "timeline" && (
-                <button onClick={() => setSortOrder(o => o==="desc"?"asc":"desc")}
-                  style={{ marginLeft:"auto", flexShrink:0, display:"flex", alignItems:"center", gap:4, background:"white", border:"1.5px solid #e5e7eb", borderRadius:8, padding:"5px 10px", fontSize:11, fontWeight:800, color:"#6b7280", cursor:"pointer", whiteSpace:"nowrap" }}>
-                  {sortOrder==="desc" ? "↑ Latest first" : "↓ Oldest first"}
-                </button>
-              )}
-            </div>
-            {/* Sort toggle — cards view, own line */}
-            {vaccineView === "cards" && (
-              <div style={{ display:"flex", justifyContent:"flex-end", marginBottom:10 }}>
-                <button onClick={() => setSortOrder(o => o==="desc"?"asc":"desc")}
-                  style={{ display:"flex", alignItems:"center", gap:4, background:"white", border:"1.5px solid #e5e7eb", borderRadius:8, padding:"5px 10px", fontSize:11, fontWeight:800, color:"#6b7280", cursor:"pointer" }}>
-                  {sortOrder==="desc" ? "↑ Latest first" : "↓ Oldest first"}
-                </button>
-              </div>
-            )}
 
             {/* ── CARD VIEW ── */}
             {vaccineView === "cards" && (() => {
@@ -1708,23 +1723,6 @@ function VaxTrack() {
           {/* ── Schedule tab ── */}
           {tab === "schedule" && (
             <div>
-              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 }}>
-                {/* Schedule / Records toggle */}
-                <div style={{ display:"flex", background:"#f3f4f6", borderRadius:10, padding:3 }}>
-                  <button
-                    style={{ padding:"5px 13px", borderRadius:8, border:"none", cursor:"pointer", fontFamily:"inherit", fontSize:12, fontWeight:800, background:"#1565c0", color:"white", boxShadow:"0 1px 3px rgba(0,0,0,0.12)" }}>
-                    🗓️ Schedule
-                  </button>
-                  <button onClick={() => setTab("records")}
-                    style={{ padding:"5px 13px", borderRadius:8, border:"none", cursor:"pointer", fontFamily:"inherit", fontSize:12, fontWeight:800, background:"transparent", color:"#9ca3af" }}>
-                    📋 Records
-                  </button>
-                </div>
-                <button onClick={() => setSortOrder(o => o==="desc"?"asc":"desc")}
-                  style={{ display:"flex", alignItems:"center", gap:4, background:"white", border:"1.5px solid #e5e7eb", borderRadius:8, padding:"5px 10px", fontSize:11, fontWeight:800, color:"#6b7280", cursor:"pointer" }}>
-                  {sortOrder==="desc" ? "↑ Latest first" : "↓ Oldest first"}
-                </button>
-              </div>
             <div style={{ position:"relative", paddingLeft:0, marginTop:4 }}>
               {/* Vertical spine removed */}
               {(sortOrder==="desc" ? [...AGE_MILESTONES].reverse() : AGE_MILESTONES).map(milestone => {
