@@ -1404,7 +1404,7 @@ function VaxTrack() {
           {tab === "vaccines" && (<>
             {/* Toggle + filter row */}
             <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:14 }}>
-              {/* View toggle — Timeline, Cards, IAP Chart all in same pill group */}
+              {/* View toggle — Timeline / Cards */}
               <div style={{ display:"flex", background:"#f3f4f6", borderRadius:10, padding:3, flexShrink:0 }}>
                 <button onClick={() => setVaccineView("timeline")}
                   style={{ padding:"5px 12px", borderRadius:8, border:"none", cursor:"pointer", fontFamily:"inherit", fontSize:12, fontWeight:800, background:vaccineView==="timeline"?"white":"transparent", color:vaccineView==="timeline"?"#1565c0":"#9ca3af", boxShadow:vaccineView==="timeline"?"0 1px 3px rgba(0,0,0,0.08)":"none", transition:"all 0.15s" }}>
@@ -1414,26 +1414,7 @@ function VaxTrack() {
                   style={{ padding:"5px 12px", borderRadius:8, border:"none", cursor:"pointer", fontFamily:"inherit", fontSize:12, fontWeight:800, background:vaccineView==="cards"?"white":"transparent", color:vaccineView==="cards"?"#1565c0":"#9ca3af", boxShadow:vaccineView==="cards"?"0 1px 3px rgba(0,0,0,0.08)":"none", transition:"all 0.15s" }}>
                   📋 Cards
                 </button>
-                <button onClick={() => setShowIAPChart(true)}
-                  style={{ padding:"5px 10px", borderRadius:8, border:"none", cursor:"pointer", fontFamily:"inherit", fontSize:12, fontWeight:800, background:"transparent", color:"#9ca3af", boxShadow:"none", transition:"all 0.15s", whiteSpace:"nowrap", display:"flex", alignItems:"center", gap:4 }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <rect x="1" y="1" width="22" height="22" rx="3" fill="white" stroke="#d1d5db" strokeWidth="1.5"/>
-                    <rect x="1" y="1" width="22" height="7" rx="3" fill="#1565c0"/>
-                    <rect x="1" y="5" width="22" height="3" fill="#1565c0"/>
-                    <line x1="9"  y1="8" x2="9"  y2="23" stroke="#e2e8f0" strokeWidth="1"/>
-                    <line x1="17" y1="8" x2="17" y2="23" stroke="#e2e8f0" strokeWidth="1"/>
-                    <line x1="1" y1="13" x2="23" y2="13" stroke="#e2e8f0" strokeWidth="1"/>
-                    <line x1="1" y1="18" x2="23" y2="18" stroke="#e2e8f0" strokeWidth="1"/>
-                    <rect x="2"  y="8.5" width="6" height="4" rx="0.5" fill="#4ade80"/>
-                    <rect x="10" y="8.5" width="6" height="4" rx="0.5" fill="#4ade80"/>
-                    <rect x="18" y="8.5" width="5" height="4" rx="0.5" fill="#facc15"/>
-                    <rect x="2"  y="13.5" width="6" height="4" rx="0.5" fill="#4ade80"/>
-                    <rect x="10" y="13.5" width="6" height="4" rx="0.5" fill="#86efac"/>
-                    <rect x="18" y="13.5" width="5" height="4" rx="0.5" fill="#93c5fd"/>
-                    <rect x="2"  y="18.5" width="6" height="4" rx="0.5" fill="#86efac"/>
-                  </svg>
-                  IAP Chart
-                </button>
+
               </div>
               {/* Filter pills — only in card view */}
               {vaccineView === "cards" && <div style={{ display:"flex", gap:5, overflowX:"auto", flex:1 }}>
@@ -1712,10 +1693,14 @@ function VaxTrack() {
                                       style={{ padding:"6px 12px", fontSize:12, fontWeight:700, border:"1.5px solid #e5e7eb", borderRadius:8, cursor:"pointer", background:"white", color:"#9ca3af" }}>Details</button>
                                   </div>
                                 </div>
-                                {/* Status badge — top right */}
-                                <span style={{ fontSize:11, fontWeight:800, color:stColor, background:stBg, borderRadius:6, padding:"4px 10px", flexShrink:0, marginTop:2 }}>
-                                  {st==="logged"?"✓ Given":st==="overdue"?"⚠ Overdue":st==="upcoming"?"⏰ Soon":"○ Future"}
-                                </span>
+                                {/* Right column: status + date + hospital */}
+                                <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", gap:4, flexShrink:0, marginTop:2 }}>
+                                  <span style={{ fontSize:11, fontWeight:800, color:stColor, background:stBg, borderRadius:6, padding:"4px 10px" }}>
+                                    {st==="logged"?"✓ Given":st==="overdue"?"⚠ Overdue":st==="upcoming"?"⏰ Soon":"○ Future"}
+                                  </span>
+                                  {logged && <span style={{ fontSize:10, fontWeight:600, color:"#6b7280", textAlign:"right" }}>{formatDate(logged.date)}</span>}
+                                  {logged && logged.provider && <span style={{ fontSize:10, fontWeight:600, color:"#adb5bd", textAlign:"right", maxWidth:110, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>🏥 {logged.provider}</span>}
+                                </div>
                               </div>
                             );
                           })}
